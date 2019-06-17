@@ -92,12 +92,11 @@ func getSecret(name string, region string) (*secretsmanager.GetSecretValueOutput
 
 	// This example assumes that you're connecting to ap-southeast-1 region
 	// For a full list of endpoints, you can refer to this site -> https://godoc.org/github.com/aws/aws-sdk-go/aws/endpoints
-	/*
-		sess := session.Must(session.NewSession(&aws.Config{
-			Region: aws.String(region),
-		})) */
+	sess := session.Must(session.NewSession(&aws.Config{
+		Region: aws.String(region),
+	}))
 
-	sess := session.Must(session.NewSession())
+	// sess := session.Must(session.NewSession())
 
 	svc := secretsmanager.New(sess)
 	input := &secretsmanager.GetSecretValueInput{
@@ -154,7 +153,7 @@ func main() {
 		return
 	}
 
-	secretKeys, err := getSecret("tt-test-secret", endpoints.ApEast1RegionID)
+	secretKeys, err := getSecret("tt-test-secret", endpoints.UsEast1RegionID)
 
 	if err != nil {
 		println("Error: Something bad happened getting the keys")
