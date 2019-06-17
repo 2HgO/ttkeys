@@ -157,7 +157,7 @@ func main() {
 		return
 	}
 
-	if err == nil {
+	if secretKeys == nil {
 		println("Error: Something bad happened getting the keys. Keys are empty")
 		return
 	}
