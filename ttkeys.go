@@ -155,7 +155,7 @@ func setupViper() {
 
 func getValForKeyViper(key string) string {
 	if viper.IsSet(key) {
-		return viper.GetString(key), nil
+		return viper.GetString(key)
 	}
 	panic(fmt.Errorf("fatal error: could not find key '%s' in ttkeysconfig file", key))
 }
