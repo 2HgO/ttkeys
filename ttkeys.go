@@ -13,9 +13,9 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/aws/endpoints"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/secretsmanager"
+	"github.com/spf13/viper"
 )
 
 const url = "https://simplifiednetworks.co:443"
@@ -142,18 +142,35 @@ func checkIfError(err error) {
 	}
 }
 
+func setupViper() {
+	viper.SetConfigName("ttkeysconfig")  // name of config file (without extension)
+	viper.AddConfigPath("/etc/ttkeys/")  // path to look for the config file in
+	viper.AddConfigPath("$HOME/.ttkeys") // call multiple times to add many search paths
+	viper.AddConfigPath(".")             // optionally look for config in the working directory
+	err := viper.ReadInConfig()          // Find and read the config file
+	if err != nil {                      // Handle errors reading the config file
+		panic(fmt.Errorf("fatal error config file: %s", err))
+	}
+}
+
+func getValForKeyViper(key string) string {
+	if viper.IsSet(key) {
+		return viper.GetString(key), nil
+	}
+	panic(fmt.Errorf("fatal error: could not find key '%s' in ttkeysconfig file", key))
+}
+
 func main() {
-	/*
-		resp := TestWebCall()
-		fmt.Println("About to print response")
-		fmt.Printf(resp) */
 
 	if len(os.Args) < 2 {
 		println("Error: Invalid command usage")
 		return
 	}
 
-	secretKeys, err := getSecret("tt-test-secret", endpoints.UsEast1RegionID)
+	setupViper()
+
+	// secretKeys, err := getSecret("tt-test-secret", endpoints.UsEast1RegionID)
+	secretKeys, err := getSecret(getValForKeyViper("secretName"), getValForKeyViper("region"))
 
 	if err != nil {
 		println("Error: Something bad happened getting the keys")
