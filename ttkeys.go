@@ -56,6 +56,7 @@ func testWebCall() string {
 	return string(body)
 }
 
+/*
 func fork() {
 	// Do a fork
 	cmd := exec.Command("/proc/self/exe", append([]string{"exec"}, os.Args[2:]...)...)
@@ -77,16 +78,16 @@ func exec() {
 	cmd.Stderr = os.Stderr
 
 	/* get full path to binary */
-	/*
-		binary, lookErr := exec.LookPath(os.Args[2])
-		if lookErr != nil {
-			panic(lookErr)
-		}
+/*
+	binary, lookErr := exec.LookPath(os.Args[2])
+	if lookErr != nil {
+		panic(lookErr)
+	}
 
-		checkIfError(syscall.Exec(binary, args, env)) */
+	checkIfError(syscall.Exec(binary, args, env)) */
 
-	checkIfError(cmd.Run())
-}
+// checkIfError(cmd.Run())
+// }
 
 func getSecret(name string, region string) (*secretsmanager.GetSecretValueOutput, error) {
 
