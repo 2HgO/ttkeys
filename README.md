@@ -25,9 +25,10 @@ Possible values for AWS regions used in the ttkeysconfig file are the following:
 
 Sample contents of ttkeysconfig.yaml file:
 
+```
 region: us-east-1
 secretName: tt-test-secret
-
+```
 
 ## install node
 cd /usr/local
