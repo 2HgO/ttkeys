@@ -20,3 +20,10 @@ us-east-1      // US East (N. Virginia).
 us-east-2      // US East (Ohio).
 us-west-1      // US West (N. California).
 us-west-2      // US West (Oregon).
+
+
+
+Sample contents of ttkeysconfig.yaml file:
+
+region: us-east-1
+secretName: tt-test-secret

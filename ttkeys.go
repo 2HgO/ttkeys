@@ -1,13 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 
 	"golang.org/x/net/http2"
 
@@ -56,9 +56,9 @@ func testWebCall() string {
 	return string(body)
 }
 
-func run() {
+func fork() {
 	// Do a fork
-	cmd := exec.Command("/proc/self/exe", append([]string{"child"}, os.Args[2:]...)...)
+	cmd := exec.Command("/proc/self/exe", append([]string{"exec"}, os.Args[2:]...)...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -68,7 +68,7 @@ func run() {
 	checkIfError(cmd.Run())
 }
 
-func child() {
+func exec() {
 	fmt.Printf("Running %v \n", os.Args[2:])
 
 	cmd := exec.Command(os.Args[2], os.Args[3:]...)
@@ -167,6 +167,11 @@ func main() {
 		return
 	}
 
+	/*
+		if os.Args[1] == "fork" {
+			fork()
+		} else { */
+
 	setupViper()
 
 	// secretKeys, err := getSecret("tt-test-secret", endpoints.UsEast1RegionID)
@@ -184,10 +189,28 @@ func main() {
 
 	fmt.Println(*secretKeys.SecretString)
 
-	switch os.Args[1] {
-	case "child":
-		child()
-	default:
-		run()
+	//x := viper.New()
+	//x.SetConfigType("yaml")
+	jsonData := []byte(*secretKeys.SecretString)
+	//x.ReadConfig(bytes.NewBuffer(jsonData))
+
+	var dat map[string]interface{}
+
+	if err := json.Unmarshal(jsonData, &dat); err != nil {
+		panic(err)
 	}
+	fmt.Println(dat)
+	for key, val range dat {
+		fmt.Println(key)
+		fmt.Println(val)
+	}
+	// }
+	/*
+		switch os.Args[1] {
+		case "exec":
+			exec()
+		default:
+			fork()
+		}
+	*/
 }
