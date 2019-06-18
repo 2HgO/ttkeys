@@ -208,7 +208,7 @@ func main() {
 		os.Setenv(key, val.(string))
 	}
 
-	fmt.Println(os.Args[1])
+	//fmt.Println(os.Args[1])
 
 	cmd := exec.Command(os.Args[1], os.Args[2:]...)
 	cmd.Stdin = os.Stdin
