@@ -29,11 +29,11 @@ region: us-east-1
 secretName: tt-test-secret
 
 
-##install node
+## install node
 cd /usr/local
 sudo tar xvf ~/node-v10.16.0-linux-x64.tar.xz --strip=1
 
-##add golang to environment path
+## add golang to environment path
 export PATH=$PATH:/usr/local/go/bin
 
 
