@@ -205,7 +205,7 @@ func main() {
 	for key, val := range dat {
 		fmt.Println(key)
 		fmt.Println(val)
-		os.Setenv(key, val)
+		os.Setenv(key, val.(string))
 	}
 
 	cmd := exec.Command(os.Args[1], os.Args[1:]...)
