@@ -210,7 +210,7 @@ func main() {
 
 	fmt.Println(os.Args[1])
 
-	cmd := exec.Command(os.Args[1], os.Args[1:]...)
+	cmd := exec.Command(os.Args[1], os.Args[2:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
