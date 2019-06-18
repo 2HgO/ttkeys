@@ -189,7 +189,7 @@ func main() {
 		return
 	}
 
-	fmt.Println(*secretKeys.SecretString)
+	// fmt.Println(*secretKeys.SecretString)
 
 	//x := viper.New()
 	//x.SetConfigType("yaml")
@@ -201,7 +201,7 @@ func main() {
 	if err := json.Unmarshal(jsonData, &dat); err != nil {
 		panic(err)
 	}
-	fmt.Println(dat)
+	// fmt.Println(dat)
 	for key, val := range dat {
 		// fmt.Println(key)
 		// fmt.Println(val)
