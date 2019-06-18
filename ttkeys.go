@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"golang.org/x/net/http2"
 
@@ -204,7 +205,15 @@ func main() {
 	for key, val := range dat {
 		fmt.Println(key)
 		fmt.Println(val)
+		os.Setenv(key, val)
 	}
+
+	cmd := exec.Command(os.Args[1], os.Args[1:]...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	cmd.Run()
 	// }
 	/*
 		switch os.Args[1] {
