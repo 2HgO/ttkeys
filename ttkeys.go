@@ -200,7 +200,7 @@ func main() {
 		panic(err)
 	}
 	fmt.Println(dat)
-	for key, val range dat {
+	for key, val := range dat {
 		fmt.Println(key)
 		fmt.Println(val)
 	}
