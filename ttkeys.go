@@ -208,6 +208,8 @@ func main() {
 		os.Setenv(key, val.(string))
 	}
 
+	fmt.Println(os.Args[1])
+
 	cmd := exec.Command(os.Args[1], os.Args[1:]...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
