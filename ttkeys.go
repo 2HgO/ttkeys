@@ -203,8 +203,8 @@ func main() {
 	}
 	fmt.Println(dat)
 	for key, val := range dat {
-		fmt.Println(key)
-		fmt.Println(val)
+		// fmt.Println(key)
+		// fmt.Println(val)
 		os.Setenv(key, val.(string))
 	}
 
