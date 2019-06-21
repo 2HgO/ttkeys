@@ -1,11 +1,17 @@
 # ttkeys
 ttkeys helps with injecting secret keys securely into apps 
 
-
 ## how to install ttkeys
 wget curl ttkeys.simplifiednetworks.co/ttkeys-v0.0.1.tar
 tar -zxvf ttkeys-v0.0.1.tar
 mv ttkeys-v0.0.1 /usr/bin/ttkeys
+
+## how to use ttkeys
+Once ttkeys is installed, you can use it run a sample nodejs program like this:
+```
+ttkeys node index.js
+```
+ttkeys looks at the configuration file ttkeysconfig.yaml (discussed next) to determine where to fetch the secrets from. Once detched successfully, ttkeys starts the application and inserts the keys into the environment of the started application. This way the application can access the secrets.
 
 ## ttkeys config file
 ttkeys uses a config file to determine where to get the secret keys from. Right now, ttkeys supports AWS SecretManager.
