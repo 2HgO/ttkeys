@@ -1,5 +1,5 @@
 # ttkeys
-ttkeys helps with injecting secret keys securely into apps 
+ttkeys helps with injecting secret keys securely into apps.
 
 ## how to install ttkeys
 ```
@@ -9,14 +9,14 @@ mv ttkeys-v0.0.1 /usr/bin/ttkeys
 ```
 
 ## how to use ttkeys
-Once ttkeys is installed, you can use it run a sample nodejs program like this:
+Once ttkeys is installed, you can use it to run a sample nodejs program like this:
 ```
 ttkeys node index.js
 ```
-ttkeys looks at the configuration file ttkeysconfig.yaml (discussed next) to determine where to fetch the secrets from. Once detched successfully, ttkeys starts the application and inserts the keys into the environment of the started application. This way the application can access the secrets.
+ttkeys looks at the configuration file ttkeysconfig.yaml (discussed next) to determine where to fetch the secrets from. Once fetched successfully, ttkeys starts the application and injects the keys into the environment of the started application. This way the application can access the secrets from its environment variables.
 
 ## ttkeys config file
-ttkeys uses a config file to determine where to get the secret keys from. Right now, ttkeys supports AWS SecretManager.
+ttkeys uses a config file to determine where to get the secret keys from. Right now, ttkeys can fetch secrets from AWS SecretsManager.
 To configure ttkeys to pull your secrets from AWS SecretManager, place a ttkeysconfig.yaml file in the root directory of your project.
 The contents of the ttkeysconfig.yaml file should look like this:
 ```
@@ -47,7 +47,7 @@ Possible values for AWS regions used in the ttkeysconfig.yam file are the follow
 
 
 ## ttkeys config file location
-ttkeys' config file can be placed in the following locations
+ttkeys' config file can be placed in any of the following locations:
 - the root directory of your project. Most preferred option
 - $HOME/.ttkeys
 - /etc/ttkeys/. This can serve as a global configuration of ttkeys
