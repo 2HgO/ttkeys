@@ -2,9 +2,11 @@
 ttkeys helps with injecting secret keys securely into apps 
 
 ## how to install ttkeys
+```
 wget curl ttkeys.simplifiednetworks.co/ttkeys-v0.0.1.tar
 tar -zxvf ttkeys-v0.0.1.tar
 mv ttkeys-v0.0.1 /usr/bin/ttkeys
+```
 
 ## how to use ttkeys
 Once ttkeys is installed, you can use it run a sample nodejs program like this:
