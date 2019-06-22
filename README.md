@@ -4,8 +4,8 @@ ttkeys helps with injecting secret keys securely into apps.
 ## how to install ttkeys
 ```
 wget curl ttkeys.simplifiednetworks.co/ttkeys-v0.0.1.tar
-tar -zxvf ttkeys-v0.0.1.tar
-mv ttkeys-v0.0.1 /usr/bin/ttkeys
+tar -xvf ttkeys-v0.0.1.tar
+mv ttkeys /usr/bin/ttkeys
 ```
 
 ## how to use ttkeys
