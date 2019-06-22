@@ -26,7 +26,7 @@ secretName: tt-test-secret
 ```
 
 Possible values for AWS regions used in the ttkeysconfig.yam file are the following:
-
+```
 - ap-east-1      // Asia Pacific (Hong Kong).
 - ap-northeast-1 // Asia Pacific (Tokyo).
 - ap-northeast-2 // Asia Pacific (Seoul).
@@ -44,7 +44,7 @@ Possible values for AWS regions used in the ttkeysconfig.yam file are the follow
 - us-east-2      // US East (Ohio).
 - us-west-1      // US West (N. California).
 - us-west-2      // US West (Oregon).
-
+```
 
 ## ttkeys config file location
 ttkeys' config file can be placed in any of the following locations:
