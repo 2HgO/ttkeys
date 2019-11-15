@@ -23,72 +23,40 @@ const url = "https://simplifiednetworks.co:443"
 
 var httpVersion = flag.Int("version", 2, "HTTP version")
 
-func testWebCall() string {
+// testWebCall tests whether a web request can be made using the defined http version
+func testWebCall() (bool, string) {
 	flag.Parse()
 	client := &http.Client{}
 
 	// Use the proper transport in the client
 	switch *httpVersion {
-	case 1:
-		client.Transport = &http.Transport{
-			// TLSClientConfig: tlsConfig,
-		}
-	case 2:
-		client.Transport = &http2.Transport{
-			// TLSClientConfig: tlsConfig,
-		}
+		case 1:
+			client.Transport = &http.Transport{
+				// TLSClientConfig: tlsConfig,
+			}
+		case 2:
+			client.Transport = &http2.Transport{
+				// TLSClientConfig: tlsConfig,
+			}
 	}
 
 	// Perform the request
 	resp, err := client.Get(url)
 	if err != nil {
-		log.Fatalf("Failed get: %s", err)
+		return false, fmt.Sprintf("Failed get: %s", err)
 	}
 	defer resp.Body.Close()
+
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalf("Failed reading response body: %s", err)
+		return false, fmt.Sprintf("Failed reading response body: %s", err)
 	}
-	fmt.Printf(
+	log.Printf(
 		"Got response %d: %s %s\n",
 		resp.StatusCode, resp.Proto, string(body))
 
-	// return string(body)
-	return string(body)
+	return true, ""
 }
-
-/*
-func fork() {
-	// Do a fork
-	cmd := exec.Command("/proc/self/exe", append([]string{"exec"}, os.Args[2:]...)...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	os.Setenv("ENV", "PRODUCTION")
-
-	checkIfError(cmd.Run())
-}
-
-func exec() {
-	fmt.Printf("Running %v \n", os.Args[2:])
-
-	cmd := exec.Command(os.Args[2], os.Args[3:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	/* get full path to binary */
-/*
-	binary, lookErr := exec.LookPath(os.Args[2])
-	if lookErr != nil {
-		panic(lookErr)
-	}
-
-	checkIfError(syscall.Exec(binary, args, env)) */
-
-// checkIfError(cmd.Run())
-// }
 
 func getSecret(name string, region string) (*secretsmanager.GetSecretValueOutput, error) {
 
@@ -98,8 +66,6 @@ func getSecret(name string, region string) (*secretsmanager.GetSecretValueOutput
 		Region: aws.String(region),
 	}))
 
-	// sess := session.Must(session.NewSession())
-
 	svc := secretsmanager.New(sess)
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(name),
@@ -108,40 +74,32 @@ func getSecret(name string, region string) (*secretsmanager.GetSecretValueOutput
 	result, err := svc.GetSecretValue(input)
 	if err != nil {
 		/*
-			 To address specific error, you can import this package:
-				"github.com/aws/aws-sdk-go/aws/awserr"
+			To address specific error, you can import this package:
+			"github.com/aws/aws-sdk-go/aws/awserr"
 			and use this example:
 		*/
 		if aerr, ok := err.(awserr.Error); ok {
 			switch aerr.Code() {
-			case secretsmanager.ErrCodeResourceNotFoundException:
-				fmt.Println(secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
-			case secretsmanager.ErrCodeInvalidParameterException:
-				fmt.Println(secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
-			case secretsmanager.ErrCodeInvalidRequestException:
-				fmt.Println(secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
-			case secretsmanager.ErrCodeDecryptionFailure:
-				fmt.Println(secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
-			case secretsmanager.ErrCodeInternalServiceError:
-				fmt.Println(secretsmanager.ErrCodeInternalServiceError, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
+				case secretsmanager.ErrCodeResourceNotFoundException:
+					return nil, fmt.Errorf("%s %s", secretsmanager.ErrCodeResourceNotFoundException, aerr.Error())
+				case secretsmanager.ErrCodeInvalidParameterException:
+					return nil, fmt.Errorf("%s %s", secretsmanager.ErrCodeInvalidParameterException, aerr.Error())
+				case secretsmanager.ErrCodeInvalidRequestException:
+					return nil, fmt.Errorf("%s %s", secretsmanager.ErrCodeInvalidRequestException, aerr.Error())
+				case secretsmanager.ErrCodeDecryptionFailure:
+					return nil, fmt.Errorf("%s %s", secretsmanager.ErrCodeDecryptionFailure, aerr.Error())
+				case secretsmanager.ErrCodeInternalServiceError:
+					return nil, fmt.Errorf("%s %s", secretsmanager.ErrCodeInternalServiceError, aerr.Error())
+				default:
+					return nil, fmt.Errorf("%s", aerr.Error())
 			}
 		} else {
 			// Print the error, cast err to awserr.Error to get the Code and
 			// Message from an error.
-			fmt.Println(err.Error())
+			return nil, err
 		}
-		return nil, err
 	}
-
 	return result, nil
-}
-
-func checkIfError(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
 
 func setupViper() {
@@ -151,78 +109,65 @@ func setupViper() {
 	viper.AddConfigPath(".")             // optionally look for config in the working directory
 	err := viper.ReadInConfig()          // Find and read the config file
 	if err != nil {                      // Handle errors reading the config file
-		panic(fmt.Errorf("fatal error config file: %s", err))
+		log.Panicln(fmt.Errorf("fatal error config file: %s", err))
 	}
 }
 
 func getValForKeyViper(key string) string {
-	if viper.IsSet(key) {
-		return viper.GetString(key)
+	if !viper.IsSet(key) {
+		log.Panic(fmt.Errorf("fatal error: could not find key '%s' in ttkeysconfig file", key))
 	}
-	panic(fmt.Errorf("fatal error: could not find key '%s' in ttkeysconfig file", key))
+	return viper.GetString(key)	
+}
+
+func init() {
+	// Kill program if command line arguments aren't provided
+	if len(os.Args) < 2 {
+		log.Fatalln("Error: Invalid command usage")
+	}
+
+	// Kill program if no internet connection
+	if ok, msg := testWebCall(); !ok {
+		log.Fatalln(msg)
+	}
+
+	// Set up viper config
+	setupViper()
 }
 
 func main() {
-
-	if len(os.Args) < 2 {
-		println("Error: Invalid command usage")
-		return
-	}
-
-	/*
-		if os.Args[1] == "fork" {
-			fork()
-		} else { */
-
-	setupViper()
-
-	// secretKeys, err := getSecret("tt-test-secret", endpoints.UsEast1RegionID)
+	// Retrieve aws secrets wrt secretname and region specified
 	secretKeys, err := getSecret(getValForKeyViper("secretName"), getValForKeyViper("region"))
 
-	if err != nil {
-		println("Error: Something bad happened getting the keys")
-		return
+	switch {
+		// Check if error while getting secrets
+		case err != nil: log.Panicln(err)
+
+		// Check if secretKeys returned is empty
+		case secretKeys == nil: log.Panicln("Error: Something bad happened getting the keys. Keys are empty")
 	}
 
-	if secretKeys == nil {
-		println("Error: Something bad happened getting the keys. Keys are empty")
-		return
-	}
-
-	// fmt.Println(*secretKeys.SecretString)
-
-	//x := viper.New()
-	//x.SetConfigType("yaml")
 	jsonData := []byte(*secretKeys.SecretString)
-	//x.ReadConfig(bytes.NewBuffer(jsonData))
 
-	var dat map[string]interface{}
+	var data map[string]interface{}
 
-	if err := json.Unmarshal(jsonData, &dat); err != nil {
-		panic(err)
-	}
-	// fmt.Println(dat)
-	for key, val := range dat {
-		// fmt.Println(key)
-		// fmt.Println(val)
-		os.Setenv(key, val.(string))
+	if err := json.Unmarshal(jsonData, &data); err != nil {
+		log.Panicln(err)
 	}
 
-	//fmt.Println(os.Args[1])
+	// Set process I/O streams as std streams
+	process := exec.Command(os.Args[1], os.Args[2:]...)
+	process.Stdin = os.Stdin
+	process.Stdout = os.Stdout
+	process.Stderr = os.Stderr
 
-	cmd := exec.Command(os.Args[1], os.Args[2:]...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	// Inject environmental variables into process env
+	for key, val := range data {
+		process.Env = append(process.Env, fmt.Sprintf("%s=%s", key, val))
+	}
 
-	checkIfError(cmd.Run())
-	// }
-	/*
-		switch os.Args[1] {
-		case "exec":
-			exec()
-		default:
-			fork()
-		}
-	*/
+	// Spawn process with process.Start() and panic it error occurs when starting process
+	if err := process.Start(); err != nil {
+		log.Panicln(err)
+	}
 }
