@@ -131,17 +131,19 @@ func init() {
 		//log.Fatalln(msg)
 	//}
 
-	// Set up viper config
-	setupViper()
+	//
 }
 
 func main() {
+	// Set up viper config
+	setupViper()
+	
 	// Retrieve aws secrets wrt secretname and region specified
 	secretKeys, err := getSecret(getValForKeyViper("secretName"), getValForKeyViper("region"))
 
 	switch {
 		// Check if error while getting secrets
-		case err != nil: log.Println("Error: Something bad happened getting the keys")
+		case err != nil: log.Panicln("Error: Something bad happened getting the keys")
 
 		// Check if secretKeys returned is empty
 		case secretKeys == nil: log.Panicln("Error: Something bad happened getting the keys. Keys are empty")
