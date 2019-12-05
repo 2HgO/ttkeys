@@ -141,7 +141,7 @@ func main() {
 
 	switch {
 		// Check if error while getting secrets
-		case err != nil: log.Panicln(err)
+		case err != nil: log.Println("Error: Something bad happened getting the keys")
 
 		// Check if secretKeys returned is empty
 		case secretKeys == nil: log.Panicln("Error: Something bad happened getting the keys. Keys are empty")
