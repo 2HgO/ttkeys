@@ -127,9 +127,9 @@ func init() {
 	}
 
 	// Kill program if no internet connection
-	if ok, msg := testWebCall(); !ok {
-		log.Fatalln(msg)
-	}
+	//if ok, msg := testWebCall(); !ok {
+		//log.Fatalln(msg)
+	//}
 
 	// Set up viper config
 	setupViper()
